@@ -36,8 +36,6 @@ export class TetrisPiece {
     this.pieceMapping = this.getPieceMapping()
   }
 
-  private readonly gameHeight: number;
-  private readonly gameWidth: number;
   private readonly partSize: number;
   public readonly type: keyof typeof pieces;
   public position: TPosition;
@@ -106,14 +104,14 @@ export class TetrisPiece {
       rows.forEach((part, x) => part && this.setPartTranslation(part, {x, y})))
   }
 
-  public getNextPosition(direction: TDirection): TPosition {
-    if (direction === 'down') return { ...this.position, y: this.position.y + 1 }
-    if (direction === 'left') return { ...this.position, x: this.position.x - 1 }
-    if (direction === 'right') return { ...this.position, x: this.position.x + 1 }
+  public getNextPosition(direction: TDirection, offset: number = 1): TPosition {
+    if (direction === 'down') return { ...this.position, y: this.position.y + offset }
+    if (direction === 'left') return { ...this.position, x: this.position.x - offset }
+    if (direction === 'right') return { ...this.position, x: this.position.x + offset }
   }
 
-  public move(direction: TDirection) {
-    this.position = this.getNextPosition(direction)
+  public move(direction: TDirection, offset?: number) {
+    this.position = this.getNextPosition(direction, offset)
     this.makeTransition()
   }
 }

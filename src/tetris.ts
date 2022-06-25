@@ -49,7 +49,6 @@ export class Tetris {
           !!this.gameState[elementY][elementX]
       })
     )
-
   }
 
   saveCurrentPieceToGameState() {
@@ -62,24 +61,24 @@ export class Tetris {
 
   addEventListeners() {
     document.addEventListener('keydown', ({key}) => {
-      let nextPosition: TPosition;
-      let direction: TDirection;
-
       if (key === 'ArrowRight') {
-        nextPosition = this.currentPiece.getNextPosition('right')
-        direction = 'right'
+        this.moveCurrentPieceWithCollisionCheck('right')
       } else if (key === 'ArrowLeft') {
-        nextPosition = this.currentPiece.getNextPosition('left')
-        direction = 'left'
+        this.moveCurrentPieceWithCollisionCheck('left')
       } else if (key === 'ArrowUp') {
         this.currentPiece.rotate90Deg()
+      } else if (key === 'ArrowDown') {
+        this.moveCurrentPieceWithCollisionCheck('down')
       }
-
-      if (nextPosition && !this.hasCollision(this.currentPiece, nextPosition)) {
-        this.currentPiece.move(direction)
-      }
-
     })
+  }
+
+  moveCurrentPieceWithCollisionCheck(direction: TDirection): boolean {
+    const nextPosition = this.currentPiece.getNextPosition(direction)
+    if (this.hasCollision(this.currentPiece, nextPosition)) return false;
+
+    this.currentPiece.move(direction)
+    return true;
   }
 
   start() {
@@ -89,10 +88,7 @@ export class Tetris {
     this.currentPiece.appendTo(this.gameContainer)
 
     setInterval(() => {
-      const nextPosition = this.currentPiece.getNextPosition('down')
-      if (!this.hasCollision(this.currentPiece, nextPosition)) {
-        this.currentPiece.move('down')
-      } else {
+      if (!this.moveCurrentPieceWithCollisionCheck('down')) {
         this.saveCurrentPieceToGameState()
         this.currentPiece = new TetrisPiece({})
         this.currentPiece.appendTo(this.gameContainer)
