@@ -32,12 +32,22 @@ export class Tetris {
       .map(() => new Array(this.gameWidth).fill(null))
   }
 
+  private hasExceededBorders({x, y}: TPosition) {
+    return x >= this.gameWidth ||
+      y >= this.gameHeight ||
+      x < 0
+  }
+
+  private pieceHasExceedBorders(piece: TetrisPiece = this.currentPiece, position: TPosition) {
+    return piece.pieceMapping.some((rows, y) =>
+      rows.some((element, x) => {
+        if (!element) return false;
+        return this.hasExceededBorders({x, y});
+      })
+    )
+  }
+
   private hasCollision(piece: TetrisPiece, nextPosition: TPosition) {
-    const hasExceededBorders = ({x, y}: TPosition) => {
-      return x >= this.gameWidth ||
-            y >= this.gameHeight ||
-            x < 0
-    }
 
     return piece.pieceMapping.some((rows, y) =>
       rows.some((element, x) => {
@@ -45,7 +55,7 @@ export class Tetris {
         const elementX = x + nextPosition.x
         const elementY = y + nextPosition.y
 
-        return hasExceededBorders({x: elementX, y: elementY}) ||
+        return this.hasExceededBorders({x: elementX, y: elementY}) ||
           !!this.gameState[elementY][elementX]
       })
     )

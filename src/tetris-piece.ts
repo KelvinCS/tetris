@@ -92,11 +92,11 @@ export class TetrisPiece {
 
         parts[x][y] = part
 
-        this.setPartTranslation(part, {x: +y, y: +x})
+        // this.setPartTranslation(part, {x: +y, y: +x})
       }
     }
 
-    this.pieceMapping = parts;
+    // this.pieceMapping = parts;
   }
 
   private makeTransition() {
